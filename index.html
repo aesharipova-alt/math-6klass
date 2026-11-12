@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточка: Сложение и вычитание смешанных чисел</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a3f8a;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .task-card {
+            border: 2px solid #e8e8e8;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .task-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .task-card.correct {
+            border-color: #4caf50;
+            background: #f1f8e9;
+        }
+
+        .task-card.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .task-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .task-type {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .task-expression {
+            font-size: 22px;
+            color: #333;
+            margin: 15px 0;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 3px;
+        }
+
+        .fraction .numerator {
+            border-bottom: 2px solid #333;
+            padding: 0 5px 2px;
+            font-size: 18px;
+        }
+
+        .fraction .denominator {
+            padding: 2px 5px 0;
+            font-size: 18px;
+        }
+
+        .mixed-number {
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle;
+        }
+
+        .mixed-number .whole {
+            font-size: 24px;
+            margin-right: 3px;
+        }
+
+        .answer-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .answer-input {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 16px;
+            width: 200px;
+            transition: border-color 0.3s;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .answer-input.correct {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .answer-input.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-check {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-check:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-hint {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+        }
+
+        .btn-hint:hover {
+            background: #ffe0b2;
+        }
+
+        .btn-hint:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hint-box {
+            display: none;
+            background: #fff8e1;
+            border: 1px solid #ffcc80;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #5d4037;
+            line-height: 1.5;
+        }
+
+        .hint-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-icon {
+            font-size: 20px;
+            margin-left: 10px;
+        }
+
+        .final-result {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .final-result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .final-result h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .final-result p {
+            font-size: 18px;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .btn-reset {
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .input-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            .task-expression {
+                font-size: 18px;
+            }
+            .answer-input {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📐 Сложение и вычитание смешанных чисел</h1>
+        <p class="subtitle">Карточка для самостоятельной работы • 6 класс</p>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p class="progress-text" id="progressText">Решено: 0 из 12</p>
+
+        <!-- Задание 1 -->
+        <div class="task-card" id="task1">
+            <span class="task-number">1</span>
+            <span class="task-type">Сложение смешанных чисел</span>
+            <div class="task-expression">
+                3<span class="mixed-number"><span class="whole">1</span><span class="fraction"><span class="numerator">1</span><span class="denominator">5</span></span></span>
+                + 2<span class="mixed-number"><span class="whole">3</span><span class="fraction"><span class="numerator">1</span><span class="denominator">10</span></span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer1" placeholder="Например: 5 1/2">
+                <button class="btn btn-check" onclick="checkAnswer(1)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn1a" onclick="showHint(1, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn1b" onclick="showHint(1, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon1"></span>
+            </div>
+            <p class="input-hint">Формат ответа: целая_часть дробь (например: 5 1/2)</p>
+            <div class="hint-box" id="hint1a">
+                💡 <b>Подсказка 1:</b> Как складывают смешанные числа? Сложите целые части отдельно, дробные — отдельно. Что нужно сделать с дробями, чтобы их можно было сложить?
+            </div>
+            <div class="hint-box" id="hint1b">
+                💡 <b>Подсказка 2:</b> Найдите общий знаменатель для 5 и 10.
+            </div>
+        </div>
+
+        <!-- Задание 2 -->
+        <div class="task-card" id="task2">
+            <span class="task-number">2</span>
+            <span class="task-type">Сложение смешанных чисел</span>
+            <div class="task-expression">
+                4<span class="mixed-number"><span class="whole">1</span><span class="fraction"><span class="numerator">3</span><span class="denominator">8</span></span></span>
+                + 2<span class="mixed-number"><span class="whole">5</span><span class="fraction"><span class="numerator">1</span><span class="denominator">12</span></span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer2" placeholder="Например: 6 1/2">
+                <button class="btn btn-check" onclick="checkAnswer(2)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn2a" onclick="showHint(2, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn2b" onclick="showHint(2, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon2"></span>
+            </div>
+            <p class="input-hint">Формат ответа: целая_часть дробь (например: 6 1/2)</p>
+            <div class="hint-box" id="hint2a">
+                💡 <b>Подсказка 1:</b> Сложите целые части. А что нужно сделать с дробными частями, чтобы их можно было сложить?
+            </div>
+            <div class="hint-box" id="hint2b">
+                💡 <b>Подсказка 2:</b> Найдите общий знаменатель для 8 и 12.
+            </div>
+        </div>
+
+        <!-- Задание 3 -->
+        <div class="task-card" id="task3">
+            <span class="task-number">3</span>
+            <span class="task-type">Вычитание из целого числа</span>
+            <div class="task-expression">
+                1 − <span class="fraction"><span class="numerator">3</span><span class="denominator">7</span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer3" placeholder="Например: 4/7">
+                <button class="btn btn-check" onclick="checkAnswer(3)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn3a" onclick="showHint(3, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn3b" onclick="showHint(3, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon3"></span>
+            </div>
+            <p class="input-hint">Формат ответа: дробь (например: 4/7)</p>
+            <div class="hint-box" id="hint3a">
+                💡 <b>Подсказка 1:</b> Как вычесть дробь из целого числа? Представьте целое число в виде дроби.
+            </div>
+            <div class="hint-box" id="hint3b">
+                💡 <b>Подсказка 2:</b> Запишите 1 как дробь со знаменателем 7.
+            </div>
+        </div>
+
+        <!-- Задание 4 -->
+        <div class="task-card" id="task4">
+            <span class="task-number">4</span>
+            <span class="task-type">Вычитание из целого числа</span>
+            <div class="task-expression">
+                5 − 2<span class="mixed-number"><span class="whole">3</span><span class="fraction"><span class="numerator">4</span><span class="denominator">9</span></span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer4" placeholder="Например: 2 5/9">
+                <button class="btn btn-check" onclick="checkAnswer(4)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn4a" onclick="showHint(4, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn4b" onclick="showHint(4, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon4"></span>
+            </div>
+            <p class="input-hint">Формат ответа: целая_часть дробь (например: 2 5/9)</p>
+            <div class="hint-box" id="hint4a">
+                💡 <b>Подсказка 1:</b> Как вычесть смешанное число из целого? Представьте целое число как смешанное с той же дробной частью.
+            </div>
+            <div class="hint-box" id="hint4b">
+                💡 <b>Подсказка 2:</b> Запишите 5 как 4 и дробь со знаменателем 9.
+            </div>
+        </div>
+
+        <!-- Задание 5 -->
+        <div class="task-card" id="task5">
+            <span class="task-number">5</span>
+            <span class="task-type">Вычитание смешанных чисел</span>
+            <div class="task-expression">
+                5<span class="mixed-number"><span class="whole">3</span><span class="fraction"><span class="numerator">3</span><span class="denominator">4</span></span></span>
+                − 2<span class="mixed-number"><span class="whole">1</span><span class="fraction"><span class="numerator">2</span><span class="denominator">5</span></span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer5" placeholder="Например: 3 7/20">
+                <button class="btn btn-check" onclick="checkAnswer(5)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn5a" onclick="showHint(5, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn5b" onclick="showHint(5, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon5"></span>
+            </div>
+            <p class="input-hint">Формат ответа: целая_часть дробь (например: 3 7/20)</p>
+            <div class="hint-box" id="hint5a">
+                💡 <b>Подсказка 1:</b> Что нужно сделать с дробями, чтобы их можно было вычесть?
+            </div>
+            <div class="hint-box" id="hint5b">
+                💡 <b>Подсказка 2:</b> Найдите общий знаменатель для 4 и 5.
+            </div>
+        </div>
+
+        <!-- Задание 6 -->
+        <div class="task-card" id="task6">
+            <span class="task-number">6</span>
+            <span class="task-type">Вычитание смешанных чисел</span>
+            <div class="task-expression">
+                5<span class="mixed-number"><span class="whole">1</span><span class="fraction"><span class="numerator">1</span><span class="denominator">6</span></span></span>
+                − 3<span class="mixed-number"><span class="whole">3</span><span class="fraction"><span class="numerator">3</span><span class="denominator">4</span></span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer6" placeholder="Например: 1 5/12">
+                <button class="btn btn-check" onclick="checkAnswer(6)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn6a" onclick="showHint(6, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn6b" onclick="showHint(6, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon6"></span>
+            </div>
+            <p class="input-hint">Формат ответа: целая_часть дробь (например: 1 5/12)</p>
+            <div class="hint-box" id="hint6a">
+                💡 <b>Подсказка 1:</b> Приведите дроби к общему знаменателю. Что делать, если дробная часть уменьшаемого меньше дробной части вычитаемого?
+            </div>
+            <div class="hint-box" id="hint6b">
+                💡 <b>Подсказка 2:</b> Найдите общий знаменатель для 6 и 4.
+            </div>
+        </div>
+
+        <!-- Задание 7 -->
+        <div class="task-card" id="task7">
+            <span class="task-number">7</span>
+            <span class="task-type">Вычитание смешанных чисел</span>
+            <div class="task-expression">
+                4<span class="mixed-number"><span class="whole">5</span><span class="fraction"><span class="numerator">5</span><span class="denominator">12</span></span></span>
+                − <span class="fraction"><span class="numerator">7</span><span class="denominator">8</span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer7" placeholder="Например: 3 11/24">
+                <button class="btn btn-check" onclick="checkAnswer(7)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn7a" onclick="showHint(7, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn7b" onclick="showHint(7, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon7"></span>
+            </div>
+            <p class="input-hint">Формат ответа: целая_часть дробь (например: 3 11/24)</p>
+            <div class="hint-box" id="hint7a">
+                💡 <b>Подсказка 1:</b> Приведите дробь к общему знаменателю. Хватит ли дробной части для вычитания?
+            </div>
+            <div class="hint-box" id="hint7b">
+                💡 <b>Подсказка 2:</b> Найдите общий знаменатель для 12 и 8.
+            </div>
+        </div>
+
+        <!-- Задание 8 -->
+        <div class="task-card" id="task8">
+            <span class="task-number">8</span>
+            <span class="task-type">Вычитание смешанных чисел</span>
+            <div class="task-expression">
+                7<span class="mixed-number"><span class="whole">2</span><span class="fraction"><span class="numerator">2</span><span class="denominator">9</span></span></span>
+                − 3<span class="mixed-number"><span class="whole">5</span><span class="fraction"><span class="numerator">5</span><span class="denominator">6</span></span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer8" placeholder="Например: 3 5/18">
+                <button class="btn btn-check" onclick="checkAnswer(8)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn8a" onclick="showHint(8, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn8b" onclick="showHint(8, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon8"></span>
+            </div>
+            <p class="input-hint">Формат ответа: целая_часть дробь (например: 3 5/18)</p>
+            <div class="hint-box" id="hint8a">
+                💡 <b>Подсказка 1:</b> Приведите дроби к общему знаменателю. Что делать, если нужно занять единицу?
+            </div>
+            <div class="hint-box" id="hint8b">
+                💡 <b>Подсказка 2:</b> Найдите общий знаменатель для 9 и 6.
+            </div>
+        </div>
+
+        <!-- Задание 9 -->
+        <div class="task-card" id="task9">
+            <span class="task-number">9</span>
+            <span class="task-type">Смешанные числа и десятичные дроби</span>
+            <div class="task-expression">
+                2<span class="mixed-number"><span class="whole">3</span><span class="fraction"><span class="numerator">3</span><span class="denominator">4</span></span></span>
+                + 1,5 = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer9" placeholder="Например: 4 1/4">
+                <button class="btn btn-check" onclick="checkAnswer(9)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn9a" onclick="showHint(9, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn9b" onclick="showHint(9, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon9"></span>
+            </div>
+            <p class="input-hint">Формат ответа: смешанное число (например: 4 1/4)</p>
+            <div class="hint-box" id="hint9a">
+                💡 <b>Подсказка 1:</b> Как сложить смешанное число и десятичную дробь? Приведите оба числа к одному виду.
+            </div>
+            <div class="hint-box" id="hint9b">
+                💡 <b>Подсказка 2:</b> Запишите 1,5 как смешанное число.
+            </div>
+        </div>
+
+        <!-- Задание 10 -->
+        <div class="task-card" id="task10">
+            <span class="task-number">10</span>
+            <span class="task-type">Смешанные числа и десятичные дроби</span>
+            <div class="task-expression">
+                6,8 − 3<span class="mixed-number"><span class="whole">2</span><span class="fraction"><span class="numerator">2</span><span class="denominator">5</span></span></span>
+                = ?
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer10" placeholder="Например: 3 3/10">
+                <button class="btn btn-check" onclick="checkAnswer(10)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn10a" onclick="showHint(10, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn10b" onclick="showHint(10, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon10"></span>
+            </div>
+            <p class="input-hint">Формат ответа: смешанное число (например: 3 3/10)</p>
+            <div class="hint-box" id="hint10a">
+                💡 <b>Подсказка 1:</b> Как вычесть смешанное число из десятичной дроби? Приведите оба числа к одному виду.
+            </div>
+            <div class="hint-box" id="hint10b">
+                💡 <b>Подсказка 2:</b> Запишите 6,8 как смешанное число.
+            </div>
+        </div>
+
+        <!-- Задание 11 -->
+        <div class="task-card" id="task11">
+            <span class="task-number">11</span>
+            <span class="task-type">Уравнение</span>
+            <div class="task-expression">
+                x + 2<span class="mixed-number"><span class="whole">5</span><span class="fraction"><span class="numerator">5</span><span class="denominator">8</span></span></span>
+                = 7
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer11" placeholder="Например: 4 3/8">
+                <button class="btn btn-check" onclick="checkAnswer(11)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn11a" onclick="showHint(11, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn11b" onclick="showHint(11, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon11"></span>
+            </div>
+            <p class="input-hint">Формат ответа: смешанное число (например: 4 3/8)</p>
+            <div class="hint-box" id="hint11a">
+                💡 <b>Подсказка 1:</b> Как найти неизвестное слагаемое?
+            </div>
+            <div class="hint-box" id="hint11b">
+                💡 <b>Подсказка 2:</b> Из суммы вычтите известное слагаемое.
+            </div>
+        </div>
+
+        <!-- Задание 12 -->
+        <div class="task-card" id="task12">
+            <span class="task-number">12</span>
+            <span class="task-type">Уравнение</span>
+            <div class="task-expression">
+                9<span class="mixed-number"><span class="whole">1</span><span class="fraction"><span class="numerator">1</span><span class="denominator">3</span></span></span>
+                − y = 4<span class="mixed-number"><span class="whole">2</span><span class="fraction"><span class="numerator">2</span><span class="denominator">5</span></span></span>
+            </div>
+            <div class="answer-section">
+                <input type="text" class="answer-input" id="answer12" placeholder="Например: 4 14/15">
+                <button class="btn btn-check" onclick="checkAnswer(12)">Проверить</button>
+                <button class="btn btn-hint" id="hintBtn12a" onclick="showHint(12, 'a')">💡 Подсказка 1</button>
+                <button class="btn btn-hint" id="hintBtn12b" onclick="showHint(12, 'b')" style="display:none;">💡 Подсказка 2</button>
+                <span class="result-icon" id="icon12"></span>
+            </div>
+            <p class="input-hint">Формат ответа: смешанное число (например: 4 14/15)</p>
+            <div class="hint-box" id="hint12a">
+                💡 <b>Подсказка 1:</b> Как найти неизвестное вычитаемое?
+            </div>
+            <div class="hint-box" id="hint12b">
+                💡 <b>Подсказка 2:</b> Из уменьшаемого вычтите разность.
+            </div>
+        </div>
+
+        <div class="final-result" id="finalResult">
+            <h2>🎉 Отличная работа!</h2>
+            <div class="score-display" id="scoreDisplay"></div>
+            <p id="scoreMessage"></p>
+            <button class="btn btn-reset" onclick="resetAll()">🔄 Начать заново</button>
+        </div>
+    </div>
+
+    <script>
+        const answers = {
+            1: ['5 1/2', '5 5/10', '5.5', '5,5'],
+            2: ['6 11/24'],
+            3: ['4/7'],
+            4: ['2 6/9', '2 2/3'],
+            5: ['3 7/20', '3.35', '3,35'],
+            6: ['1 5/12'],
+            7: ['3 11/24'],
+            8: ['3 5/18'],
+            9: ['4 1/4', '4.25', '4,25'],
+            10: ['3 3/10', '3.3', '3,3'],
+            11: ['4 3/8'],
+            12: ['4 14/15']
+        };
+
+        let solved = new Set();
+
+        function normalizeAnswer(input) {
+            return input.trim().replace(/\s+/g, ' ').replace(',', '.');
+        }
+
+        function checkAnswer(num) {
+            const input = document.getElementById('answer' + num);
+            const card = document.getElementById('task' + num);
+            const icon = document.getElementById('icon' + num);
+            const userAnswer = normalizeAnswer(input.value);
+
+            if (!userAnswer) {
+                input.style.borderColor = '#ff9800';
+                return;
+            }
+
+            const correctAnswers = answers[num].map(a => normalizeAnswer(a));
+            
+            let isCorrect = correctAnswers.some(a => a === userAnswer);
+            
+            if (!isCorrect) {
+                isCorrect = checkFractionEquivalence(userAnswer, correctAnswers);
+            }
+
+            if (isCorrect) {
+                input.className = 'answer-input correct';
+                card.className = 'task-card correct';
+                icon.textContent = '✅';
+                solved.add(num);
+                updateProgress();
+            } else {
+                input.className = 'answer-input incorrect';
+                card.className = 'task-card incorrect';
+                icon.textContent = '❌';
+                setTimeout(() => {
+                    input.className = 'answer-input';
+                    card.className = 'task-card';
+                    icon.textContent = '';
+                }, 2000);
+            }
+
+            if (solved.size === 12) {
+                showFinalResult();
+            }
+        }
+
+        function checkFractionEquivalence(userAnswer, correctAnswers) {
+            const userVal = parseMixedNumber(userAnswer);
+            if (userVal === null) return false;
+            
+            for (let ca of correctAnswers) {
+                const caVal = parseMixedNumber(ca);
+                if (caVal !== null && Math.abs(userVal - caVal) < 0.001) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function parseMixedNumber(str) {
+            str = str.replace(',', '.').trim();
+            
+            if (/^\d+\.?\d*$/.test(str)) {
+                return parseFloat(str);
+            }
+            
+            const mixedMatch = str.match(/^(\d+)\s+(\d+)\/(\d+)$/);
+            if (mixedMatch) {
+                return parseInt(mixedMatch[1]) + parseInt(mixedMatch[2]) / parseInt(mixedMatch[3]);
+            }
+            
+            const fracMatch = str.match(/^(\d+)\/(\d+)$/);
+            if (fracMatch) {
+                return parseInt(fracMatch[1]) / parseInt(fracMatch[2]);
+            }
+            
+            return null;
+        }
+
+        function showHint(num, part) {
+            const hint = document.getElementById('hint' + num + part);
+            hint.classList.add('show');
+            
+            if (part === 'a') {
+                document.getElementById('hintBtn' + num + 'b').style.display = 'inline-block';
+                document.getElementById('hintBtn' + num + 'a').style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const percent = (solved.size / 12) * 100;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = `Решено: ${solved.size} из 12`;
+        }
+
+        function showFinalResult() {
+            const result = document.getElementById('finalResult');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const scoreMessage = document.getElementById('scoreMessage');
+            
+            result.classList.add('show');
+            scoreDisplay.textContent = '12/12';
+            scoreMessage.textContent = 'Все задания решены верно! Ты отлично усвоил тему! 🌟';
+            
+            result.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetAll() {
+            solved.clear();
+            updateProgress();
+            document.getElementById('finalResult').classList.remove('show');
+            
+            for (let i = 1; i <= 12; i++) {
+                document.getElementById('answer' + i).value = '';
+                document.getElementById('answer' + i).className = 'answer-input';
+                document.getElementById('task' + i).className = 'task-card';
+                document.getElementById('icon' + i).textContent = '';
+                document.getElementById('hint' + i + 'a').classList.remove('show');
+                document.getElementById('hint' + i + 'b').classList.remove('show');
+                document.getElementById('hintBtn' + i + 'a').style.display = 'inline-block';
+                document.getElementById('hintBtn' + i + 'b').style.display = 'none';
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.answer-input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const num = this.id.replace('answer', '');
+                    checkAnswer(parseInt(num));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
